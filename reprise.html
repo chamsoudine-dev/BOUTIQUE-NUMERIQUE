@@ -222,10 +222,10 @@
         WhatsApp
       </a>
       <button class="nav-btn">❤️ Favoris</button>
-      <button class="nav-btn cart">
+      <a href="panier.html" class="nav-btn cart" style="text-decoration:none;">
         🛒 Panier
         <span class="cart-badge" id="cart-count">0</span>
-      </button>
+      </a>
     </div>
   </div>
 </nav>
@@ -255,13 +255,16 @@
     <input type="text" placeholder="Ex: iPhone 12 Pro Max 256GB" style="width: 100%; padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; font-size: 1rem; font-family: inherit;">
     
     <label style="font-weight: 700; margin-bottom: 8px; display: block;">État de l'appareil</label>
-    <select style="width: 100%; padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 30px; font-size: 1rem; font-family: inherit; background: #fff;">
+    <select style="width: 100%; padding: 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 20px; font-size: 1rem; font-family: inherit; background: #fff;">
       <option>Excellent état (Aucune rayure)</option>
       <option>Bon état (Micro-rayures)</option>
       <option>Écran cassé mais fonctionnel</option>
     </select>
 
-    <a href="https://wa.me/22789322753?text=Je%20veux%20vendre%20mon%20ancien%20appareil" target="_blank" class="btn-primary" style="width: 100%; justify-content: center; text-decoration: none;">Estimer le prix sur WhatsApp</a>
+    <label style="font-weight: 700; margin-bottom: 8px; display: block;">Photos de l'appareil (Face et Dos)</label>
+    <input type="file" accept="image/*" multiple style="width: 100%; padding: 16px; border: 1px dashed var(--muted); border-radius: 12px; margin-bottom: 30px; font-size: 1rem; font-family: inherit; background: #fff; cursor: pointer;">
+
+    <a href="https://wa.me/22789322753?text=Bonjour,%20je%20veux%20vendre%20mon%20ancien%20appareil.%20Je%20vous%20envoie%20les%20photos%20tout%20de%20suite!" target="_blank" class="btn-primary" style="width: 100%; justify-content: center; text-decoration: none;">Joindre les photos sur WhatsApp pour estimation</a>
   </div>
 </div>
 <!-- TRUST STRIP -->
@@ -379,31 +382,45 @@
     });
   });
 
-  // Cart system
-  let cartCount = 0;
+    // SYSTEME DE PANIER ROBUSTE (localStorage)
+  let cart = JSON.parse(localStorage.getItem('techNigerCart')) || [];
   const cartBadge = document.getElementById('cart-count');
 
-  // Add to cart feedback
-  document.querySelectorAll('.btn-add').forEach(btn => {
-    btn.addEventListener('click', () => {
-      cartCount++;
-      if (cartBadge) {
-        cartBadge.textContent = cartCount;
-        // Animation du badge
+  function updateCartBadge() {
+    if (cartBadge) {
+      cartBadge.textContent = cart.length;
+      if(cart.length > 0) {
         cartBadge.style.transform = 'scale(1.5)';
         setTimeout(() => cartBadge.style.transform = 'scale(1)', 200);
+      }
+    }
+  }
+  updateCartBadge();
+
+  document.querySelectorAll('.btn-add').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.target.closest('.product-card') || e.target.closest('.phone-card');
+      if(card) {
+        const name = card.querySelector('.product-name').textContent;
+        const priceText = card.querySelector('.price').textContent;
+        // Extraire uniquement les chiffres pour le calcul
+        const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+        
+        cart.push({ name: name, price: price });
+        localStorage.setItem('techNigerCart', JSON.stringify(cart));
+        updateCartBadge();
       }
 
       const original = btn.textContent;
       btn.textContent = '✅ Ajouté !';
-      btn.style.background = 'rgba(37,211,102,.15)';
-      btn.style.borderColor = 'rgba(37,211,102,.4)';
-      btn.style.color = '#25d366';
+      btn.style.background = '#25d366';
+      btn.style.color = '#fff';
+      btn.style.borderColor = '#25d366';
       setTimeout(() => {
         btn.textContent = original;
         btn.style.background = '';
-        btn.style.borderColor = '';
         btn.style.color = '';
+        btn.style.borderColor = '';
       }, 1500);
     });
   });

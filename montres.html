@@ -222,10 +222,10 @@
         WhatsApp
       </a>
       <button class="nav-btn">❤️ Favoris</button>
-      <button class="nav-btn cart">
+      <a href="panier.html" class="nav-btn cart" style="text-decoration:none;">
         🛒 Panier
         <span class="cart-badge" id="cart-count">0</span>
-      </button>
+      </a>
     </div>
   </div>
 </nav>
@@ -647,31 +647,45 @@
     });
   });
 
-  // Cart system
-  let cartCount = 0;
+    // SYSTEME DE PANIER ROBUSTE (localStorage)
+  let cart = JSON.parse(localStorage.getItem('techNigerCart')) || [];
   const cartBadge = document.getElementById('cart-count');
 
-  // Add to cart feedback
-  document.querySelectorAll('.btn-add').forEach(btn => {
-    btn.addEventListener('click', () => {
-      cartCount++;
-      if (cartBadge) {
-        cartBadge.textContent = cartCount;
-        // Animation du badge
+  function updateCartBadge() {
+    if (cartBadge) {
+      cartBadge.textContent = cart.length;
+      if(cart.length > 0) {
         cartBadge.style.transform = 'scale(1.5)';
         setTimeout(() => cartBadge.style.transform = 'scale(1)', 200);
+      }
+    }
+  }
+  updateCartBadge();
+
+  document.querySelectorAll('.btn-add').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const card = e.target.closest('.product-card') || e.target.closest('.phone-card');
+      if(card) {
+        const name = card.querySelector('.product-name').textContent;
+        const priceText = card.querySelector('.price').textContent;
+        // Extraire uniquement les chiffres pour le calcul
+        const price = parseInt(priceText.replace(/[^0-9]/g, ''));
+        
+        cart.push({ name: name, price: price });
+        localStorage.setItem('techNigerCart', JSON.stringify(cart));
+        updateCartBadge();
       }
 
       const original = btn.textContent;
       btn.textContent = '✅ Ajouté !';
-      btn.style.background = 'rgba(37,211,102,.15)';
-      btn.style.borderColor = 'rgba(37,211,102,.4)';
-      btn.style.color = '#25d366';
+      btn.style.background = '#25d366';
+      btn.style.color = '#fff';
+      btn.style.borderColor = '#25d366';
       setTimeout(() => {
         btn.textContent = original;
         btn.style.background = '';
-        btn.style.borderColor = '';
         btn.style.color = '';
+        btn.style.borderColor = '';
       }, 1500);
     });
   });
