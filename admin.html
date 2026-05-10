@@ -181,6 +181,11 @@
     .phone-side-imgs { flex-direction: row; }
   }
 </style>
+  <script>
+    if (sessionStorage.getItem('techNigerAdmin') !== 'authenticated') {
+      window.location.href = 'admin-login.html';
+    }
+  </script>
 </head>
 <body>
 

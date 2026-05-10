@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Connexion · TechNiger</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f4f4f4;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .login-wrap {
+    width: 100%;
+    max-width: 420px;
+    padding: 24px;
+  }
+
+  .login-card {
+    background: #fff;
+    border-radius: 24px;
+    padding: 48px 40px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.08);
+    text-align: center;
+  }
+
+  .login-icon {
+    width: 72px; height: 72px;
+    background: #f4f4f4;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 24px;
+  }
+
+  .login-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+    letter-spacing: -1px;
+  }
+
+  .login-sub {
+    color: #757575;
+    font-size: 1rem;
+    margin-bottom: 36px;
+  }
+
+  .form-group { margin-bottom: 20px; text-align: left; }
+
+  label {
+    display: block;
+    font-weight: 700;
+    font-size: .9rem;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  input[type="password"] {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color .2s;
+    outline: none;
+  }
+
+  input[type="password"]:focus { border-color: #000; }
+
+  .btn-login {
+    width: 100%;
+    padding: 16px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s;
+    margin-top: 8px;
+  }
+  .btn-login:hover { background: #333; }
+
+  .error-msg {
+    display: none;
+    background: #fff0f0;
+    border: 1px solid #ffcccc;
+    color: #cc0000;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: .9rem;
+    font-weight: 600;
+    margin-top: 16px;
+  }
+
+  .shake { animation: shake .4s ease; }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .attempts-msg {
+    font-size: .8rem;
+    color: #757575;
+    margin-top: 12px;
+  }
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-card" id="login-card">
+    <div class="login-icon">⚙️</div>
+    <h1 class="login-title">Espace Admin</h1>
+    <p class="login-sub">TechNiger Store · Accès réservé aux PDG</p>
+
+    <form id="login-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="pass-input">Mot de passe</label>
+        <input type="password" id="pass-input" placeholder="••••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn-login">🔓 Connexion</button>
+      <div class="error-msg" id="error-msg">❌ Mot de passe incorrect. Réessayez.</div>
+      <p class="attempts-msg" id="attempts-msg"></p>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Mot de passe Admin — Pour changer: remplacer la valeur de ADMIN_PASS
+  // hashCode est utilisé pour ne pas exposer le mot de passe en clair dans le code
+  const ADMIN_HASH = hashCode("TechNiger@PDG2025");
+  let attempts = 0;
+  const MAX_ATTEMPTS = 5;
+
+  function hashCode(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash;
+  }
+
+  // Si déjà connecté, rediriger directement
+  if (sessionStorage.getItem('techNigerAdmin') === 'authenticated') {
+    window.location.href = 'admin.html';
+  }
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const pass = document.getElementById('pass-input').value;
+    const card = document.getElementById('login-card');
+    const errMsg = document.getElementById('error-msg');
+    const attemptsMsg = document.getElementById('attempts-msg');
+
+    if (hashCode(pass) === ADMIN_HASH) {
+      // Succès : mémoriser la session et rediriger
+      sessionStorage.setItem('techNigerAdmin', 'authenticated');
+      document.getElementById('login-form').innerHTML = '<p style="color:#25d366; font-size:1.2rem; font-weight:800; text-align:center;">✅ Connexion réussie ! Redirection...</p>';
+      setTimeout(() => window.location.href = 'admin.html', 1000);
+    } else {
+      attempts++;
+      card.classList.add('shake');
+      setTimeout(() => card.classList.remove('shake'), 400);
+      errMsg.style.display = 'block';
+
+      const remaining = MAX_ATTEMPTS - attempts;
+      if (remaining <= 0) {
+        // Bloquer pendant 30 secondes
+        document.getElementById('pass-input').disabled = true;
+        document.querySelector('.btn-login').disabled = true;
+        attemptsMsg.textContent = '🔒 Trop de tentatives. Attendez 30 secondes.';
+        attemptsMsg.style.color = '#cc0000';
+        setTimeout(() => {
+          document.getElementById('pass-input').disabled = false;
+          document.querySelector('.btn-login').disabled = false;
+          attempts = 0;
+          attemptsMsg.textContent = '';
+        }, 30000);
+      } else {
+        attemptsMsg.textContent = \`\${remaining} tentative(s) restante(s)\`;
+      }
+
+      document.getElementById('pass-input').value = '';
+      document.getElementById('pass-input').focus();
+    }
+  }
+</script>
+</body>
+</html>
