@@ -1,0 +1,16 @@
+Voici tous les liens essentiels de votre nouvelle boutique TechNiger Store mis à jour et prêts à l'emploi :
+
+🌐 Pour vos Clients (Le Site Public)
+Accueil : https://boutique-numerique.vercel.app/
+Smartphones : https://boutique-numerique.vercel.app/smartphones.html
+Le Panier : https://boutique-numerique.vercel.app/panier.html
+⚙️ Pour l'Administration (PDG uniquement)
+Page de Connexion : https://boutique-numerique.vercel.app/admin-login.html
+Mot de passe : TechNiger@PDG2025
+Lien direct vers le Générateur (après connexion) : https://boutique-numerique.vercel.app/admin.html
+🛠️ Pour la Gestion Technique (Vôtre compte)
+Console Firebase (Base de données) : console.firebase.google.com
+Dépôt GitHub (Code source) : github.com/chamsoudine-dev/BOUTIQUE-NUMERIQUE
+Petit rappel pour le PDG : Quand il ajoute un produit sur admin.html, il doit juste attendre le message de confirmation vert. L'article apparaîtra tout seul dans la section "Nouveautés ⚡" de la page d'accueil !
+
+Tout est prêt. Souhaitez-vous que je fasse une dernière vérification sur l'un de ces liens ? 😊

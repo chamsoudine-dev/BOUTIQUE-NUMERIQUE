@@ -136,8 +136,24 @@
       btn.disabled = true;
       btn.innerHTML = "⏳ Publication en cours...";
       await addDoc(collection(db, "articles"), data);
-      alert("✅ ARTICLE PUBLIÉ ! L'article est maintenant en ligne sur votre site.");
-      window.location.reload();
+      alert("✅ PRODUIT PUBLIÉ ! L'article est maintenant en ligne sur votre site.");
+      
+      // Afficher le bouton de partage WhatsApp
+      const shareBtn = document.createElement('button');
+      shareBtn.className = "btn-publier"; // On réutilise le style
+      shareBtn.style.marginTop = "10px";
+      shareBtn.style.background = "#25d366";
+      shareBtn.style.color = "white";
+      shareBtn.innerHTML = "📱 Partager sur mon Statut WhatsApp";
+      
+      const shareMsg = encodeURIComponent(`🔥 NOUVEAUTÉ CHEZ TECHNIGER !\n\n🚀 ${data.brand} ${data.name}\n💰 Prix : ${data.price.toLocaleString()} FCFA\n\n👉 Voir et commander ici : https://boutique-numerique.vercel.app/`);
+      
+      shareBtn.onclick = () => {
+        window.open(`https://wa.me/?text=${shareMsg}`, '_blank');
+      };
+
+      btn.parentNode.appendChild(shareBtn);
+      // window.location.reload(); // On ne recharge plus tout de suite pour laisser le temps de partager 
     } catch (e) {
       alert("❌ Erreur de publication. Assurez-vous d'avoir activé 'Firestore Database' en mode test dans votre console Firebase.");
       console.error(e);
