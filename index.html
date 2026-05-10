@@ -725,20 +725,7 @@
   </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyB-vX_v_EXAMPLE_KEY",
-    authDomain: "techniger-boutique.firebaseapp.com",
-    projectId: "techniger-boutique",
-    storageBucket: "techniger-boutique.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  import { db, collection, query, orderBy, onSnapshot } from './js/firebase-config.js';
 
   const container = document.getElementById('firebase-products');
   const section = document.getElementById('dynamic-section');

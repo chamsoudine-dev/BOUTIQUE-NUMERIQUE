@@ -107,21 +107,7 @@
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-  // Config de test (a remplacer par la votre)
-  const firebaseConfig = {
-    apiKey: "AIzaSyB-vX_v_EXAMPLE_KEY",
-    authDomain: "techniger-boutique.firebaseapp.com",
-    projectId: "techniger-boutique",
-    storageBucket: "techniger-boutique.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+  import { db, collection, addDoc } from './js/firebase-config.js';
 
   window.publier = async function() {
     const btn = document.getElementById('btn-pub');
@@ -150,10 +136,11 @@
       btn.disabled = true;
       btn.innerHTML = "⏳ Publication en cours...";
       await addDoc(collection(db, "articles"), data);
-      alert("✅ ARTICLE PUBLIÉ ! Le PDG a réussi.");
+      alert("✅ ARTICLE PUBLIÉ ! L'article est maintenant en ligne sur votre site.");
       window.location.reload();
     } catch (e) {
-      alert("❌ Erreur. Vérifiez votre connexion.");
+      alert("❌ Erreur de publication. Assurez-vous d'avoir activé 'Firestore Database' en mode test dans votre console Firebase.");
+      console.error(e);
       btn.disabled = false;
       btn.innerHTML = "🚀 PUBLIER SUR LE SITE";
     }

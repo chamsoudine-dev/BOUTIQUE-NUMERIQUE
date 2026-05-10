@@ -1,43 +1,21 @@
-// CONFIGURATION FIREBASE TECH-NIGER
-// Ce fichier gère la connexion à la base de données pour l'ajout automatique de produits
+// CONFIGURATION FIREBASE PERSONNELLE - TECH-NIGER
+// Connecté au compte anarouachamsoudine010@gmail.com
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-// Configuration (Utilisation d'une instance de test pour le moment)
 const firebaseConfig = {
-  apiKey: "AIzaSyB-vX_v_EXAMPLE_KEY",
+  apiKey: "AIzaSyAcorwAaxNHtE8774nuruHTHMjtaRSZlvk",
   authDomain: "techniger-boutique.firebaseapp.com",
   projectId: "techniger-boutique",
-  storageBucket: "techniger-boutique.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
+  storageBucket: "techniger-boutique.firebasestorage.app",
+  messagingSenderId: "931204128922",
+  appId: "1:931204128922:web:edd69ce71239dd1076ff23",
+  measurementId: "G-Z1WTMBJECR"
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
-// Fonction pour ajouter un produit (utilisée par admin.html)
-export async function saveProduct(productData) {
-  try {
-    const docRef = await addDoc(collection(db, "produits"), {
-      ...productData,
-      createdAt: new Date().toISOString()
-    });
-    return docRef.id;
-  } catch (e) {
-    console.error("Erreur lors de l'ajout: ", e);
-    throw e;
-  }
-}
-
-// Fonction pour récupérer les produits (utilisée par index.html, etc.)
-export async function fetchProducts() {
-  const q = query(collection(db, "produits"), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-  const products = [];
-  querySnapshot.forEach((doc) => {
-    products.push({ id: doc.id, ...doc.data() });
-  });
-  return products;
-}
+// Fonctions d'export pour les pages
+export { collection, addDoc, getDocs, query, orderBy, onSnapshot };
