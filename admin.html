@@ -3,601 +3,161 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TechNiger Store — Électronique Premium</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<title>Admin TechNiger — Publier</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #ffffff;
     --bg2: #f4f4f4;
-    --bg3: #e5e5e5;
-    --card: #f4f4f4;
     --border: #e0e0e0;
-    --accent: #000000;
     --accent2: #2189ff;
-    --gold: #d4af37;
-    --green-wa: #25d366;
     --text: #000000;
     --muted: #757575;
-    --red: #e3000f;
-    --radius: 20px;
-    --radius-sm: 30px;
   }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); margin: 0; padding: 40px 20px; }
+  .container { max-width: 800px; margin: 0 auto; }
+  .card { background: var(--bg2); padding: 32px; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+  h1 { font-weight: 800; font-size: 2rem; margin-bottom: 8px; text-align: center; }
+  p.sub { text-align: center; color: var(--muted); margin-bottom: 32px; }
+  
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  label { display: block; font-weight: 700; margin-bottom: 8px; font-size: 0.9rem; }
+  input, select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; font-size: 1rem; box-sizing: border-box; }
+  
+  .section-title { font-weight: 800; margin: 24px 0 16px; font-size: 1.1rem; border-bottom: 2px solid var(--border); padding-bottom: 8px; }
+  
+  .btn-publier { width: 100%; padding: 18px; background: #000; color: #fff; border: none; border-radius: 30px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: transform 0.2s, background 0.2s; margin-top: 20px; }
+  .btn-publier:hover { background: #333; transform: translateY(-2px); }
+  .btn-publier:disabled { background: #ccc; cursor: not-allowed; }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-
-  /* ─────────── TOP BAR ─────────── */
-  .topbar { background: #f4f4f4; padding: 10px 0; font-size: .8rem; color: var(--muted); border-bottom: 1px solid var(--border); }
-  .topbar .inner { max-width: 1400px; margin: auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; font-weight: 500; }
-  .topbar a { color: var(--text); text-decoration: none; transition: color .2s; }
-  .topbar a:hover { color: var(--accent2); }
-  .topbar-links { display: flex; gap: 24px; }
-
-  /* ─────────── NAVBAR ─────────── */
-  .navbar { background: rgba(255,255,255,.98); backdrop-filter: blur(20px); position: sticky; top: 0; z-index: 900; padding: 16px 0; border-bottom: 1px solid var(--border); }
-  .nav-inner { max-width: 1400px; margin: auto; padding: 0 24px; display: flex; align-items: center; gap: 32px; }
-  .logo { font-family: 'DM Sans', sans-serif; font-size: 1.6rem; font-weight: 800; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 8px; letter-spacing: -1px; }
-  .logo-icon { display:none; }
-  .logo span { color: var(--accent2); }
-
-  .search-wrap { flex: 1; display: flex; background: var(--bg2); border-radius: 30px; overflow: hidden; padding: 2px; }
-  .search-cat { display: none; }
-  .search-input { flex: 1; background: transparent; border: none; padding: 12px 20px; color: var(--text); font-size: .95rem; outline: none; font-weight: 600; }
-  .search-btn { background: transparent; border: none; padding: 0 20px; cursor: pointer; font-size: 1.2rem; transition: transform .2s; }
-  .search-btn:hover { transform: scale(1.1); }
-
-  .nav-actions { display: flex; gap: 12px; align-items: center; }
-  .nav-btn { display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid var(--border); color: var(--text); padding: 10px 20px; border-radius: 30px; cursor: pointer; font-family: inherit; font-size: .9rem; font-weight: 700; transition: all .2s; text-decoration: none; }
-  .nav-btn:hover { background: var(--bg2); }
-  .nav-btn.wa { background: #000; color: #fff; border: none; }
-  .nav-btn.wa:hover { background: #333; }
-  .nav-btn.cart { background: transparent; position: relative; border-color: var(--text); }
-  .nav-btn.cart:hover { background: var(--text); color: #fff; }
-  .cart-badge { position: absolute; top: -6px; right: -6px; background: var(--accent2); color: #fff; font-size: .7rem; font-weight: 700; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: transform 0.2s; }
-
-  /* ─────────── CATEGORY NAV ─────────── */
-  .cat-nav { background: #fff; border-bottom: 1px solid var(--border); }
-  .cat-nav-inner { max-width: 1400px; margin: auto; padding: 12px 24px; display: flex; align-items: center; gap: 24px; overflow-x: auto; scrollbar-width: none; }
-  .cat-nav-inner::-webkit-scrollbar { display: none; }
-  .cat-link { color: var(--muted); text-decoration: none; font-size: .95rem; font-weight: 600; white-space: nowrap; transition: color .2s; position: relative; }
-  .cat-link:hover, .cat-link.active { color: var(--text); }
-  .cat-link.active::after { content:''; position:absolute; bottom:-14px; left:0; right:0; height:2px; background:var(--text); }
-
-  /* ─────────── HERO ─────────── */
-  .hero { max-width: 1400px; margin: 40px auto; padding: 0 24px; display: grid; grid-template-columns: 1fr; gap: 24px; }
-  .hero-main { background: var(--bg2); border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 24px; min-height: 400px; position: relative; overflow: hidden; }
-  .hero-badge { display: inline-flex; align-items: center; background: #fff; color: var(--text); font-size: .8rem; font-weight: 700; padding: 8px 16px; border-radius: 30px; margin-bottom: 24px; box-shadow: 0 4px 12px rgba(0,0,0,.05); text-transform: uppercase; letter-spacing: 1px;}
-  .hero-title { font-family: 'DM Sans', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; letter-spacing: -2px; }
-  .hero-title em { color: var(--accent2); font-style: normal; }
-  .hero-sub { color: var(--muted); font-size: 1.2rem; line-height: 1.6; margin-bottom: 32px; max-width: 600px; }
-  .hero-ctas { display: flex; gap: 16px; justify-content: center; }
-  .btn-primary { background: #000; color: #fff; border: none; padding: 16px 36px; border-radius: 30px; font-family: inherit; font-size: 1.05rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: background .2s; }
-  .btn-primary:hover { background: #333; }
-  .btn-wa { background: #fff; color: #000; border: 1px solid var(--border); padding: 16px 36px; border-radius: 30px; font-family: inherit; font-size: 1.05rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all .2s; }
-  .btn-wa:hover { border-color: #000; }
-  .hero-side, .hero-stats, .hero-float-phone { display: none; } 
-
-  /* ─────────── SECTION TITLE ─────────── */
-  .section { max-width: 1400px; margin: 0 auto 80px; padding: 0 24px; }
-  .section-head { text-align: center; margin-bottom: 40px; display:flex; flex-direction:column; align-items:center; }
-  .section-title { font-size: 3rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
-  .section-title::before { display:none; }
-  .see-all { color: var(--text); text-decoration: underline; font-size: 1.1rem; font-weight: 700; display: inline-block; margin-top: 10px; }
-
-  /* ─────────── PRODUCT GRID ─────────── */
-  .product-grid, .cat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
-  .product-card, .phone-card, .cat-card { background: var(--bg2); border-radius: var(--radius); padding: 40px 24px; transition: transform .3s ease, box-shadow .3s ease; cursor: pointer; position: relative; text-align: center; border:none; display: flex; flex-direction: column; align-items: center; text-decoration:none; }
-  .product-card:hover, .phone-card:hover, .cat-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,.06); border-color: transparent;}
-  .product-badge { position: absolute; top: 20px; left: 20px; font-size: .75rem; font-weight: 800; padding: 6px 12px; border-radius: 30px; background: #fff; color: #000; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
-  .product-wish { position: absolute; top: 20px; right: 20px; background: #fff; border: none; color: var(--muted); width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all .2s; font-size: 1.1rem; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
-  .product-wish:hover { color: var(--red); transform: scale(1.1); }
-  .product-image-wrap { height: 200px; display: flex; align-items: center; justify-content: center; font-size: 6rem; margin-bottom: 24px; background: transparent;}
-  .product-image-wrap::after { display:none; }
-  .product-body { width: 100%; }
-  .product-brand { font-size: .85rem; color: var(--muted); font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;}
-  .product-name, .cat-name { font-size: 1.3rem; font-weight: 800; margin-bottom: 12px; line-height: 1.3; color: var(--text); }
-  .cat-icon { font-size: 3rem; margin-bottom: 16px; }
-  .product-rating { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: .9rem; margin-bottom: 20px; }
-  .stars { color: var(--text); }
-  .product-price-row { margin-bottom: 24px; justify-content:center; }
-  .price { font-size: 1.5rem; font-weight: 800; color: var(--text); display: block; }
-  .product-actions { display: flex; gap: 10px; width: 100%; justify-content:center; }
-  .btn-add { flex: 1; background: #000; color: #fff; border: none; padding: 14px 0; border-radius: 30px; font-family: inherit; font-size: 1rem; font-weight: 700; cursor: pointer; transition: background .2s; text-align:center;}
-  .btn-add:hover { background: #333; color: #fff; }
-  .btn-wa-sm { background: #fff; border: 1px solid var(--border); color: #000; padding: 14px 20px; border-radius: 30px; font-size: 1.1rem; cursor: pointer; transition: all .2s; display:flex; align-items:center; justify-content:center; }
-  .btn-wa-sm:hover { border-color: #000; }
-
-  /* ─────────── PROMO BANNERS ─────────── */
-  .promo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-  .promo-banner { border-radius: 24px; padding: 40px 32px; position: relative; overflow: hidden; cursor: pointer; transition: transform .3s; background: var(--bg2); min-height: 280px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; border:none; }
-  .promo-banner:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,.05); }
-  .promo-label { font-size: .85rem; font-weight: 800; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; opacity:1; }
-  .promo-title { font-size: 1.8rem; font-weight: 800; line-height: 1.2; margin-bottom: 16px; color: var(--text); }
-  .promo-cta { font-size: 1.05rem; font-weight: 700; text-decoration: underline; color: var(--text); opacity:1;}
-  .promo-icon, .promo-glow, .promo-1, .promo-2, .promo-3 { background: var(--bg2); }
-
-  /* ─────────── TRUST STRIP ─────────── */
-  .trust-strip { background: #fff; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 80px 0; margin: 80px 0; }
-  .trust-inner { max-width: 1400px; margin: auto; padding: 0 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; text-align: center; }
-  .trust-item { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-  .trust-icon { width: 72px; height: 72px; border-radius: 50%; background: #f4f4f4; border:none; display: flex; align-items: center; justify-content: center; font-size: 2rem; color:#000; }
-  .trust-title { font-weight: 800; font-size: 1.2rem; }
-  .trust-text { font-size: .95rem; color: var(--muted); line-height: 1.6; }
-
-  /* ─────────── WHATSAPP FLOAT ─────────── */
-  .wa-float { position: fixed; bottom: 28px; right: 28px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
-  .wa-bubble { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 16px 20px; font-size: .9rem; color: var(--text); max-width: 260px; text-align: right; box-shadow: 0 10px 40px rgba(0,0,0,.1); animation: slideIn .4s ease; font-weight:500; }
-  .wa-bubble strong { color: var(--text); display: block; margin-bottom: 4px; font-weight:800; }
-  @keyframes slideIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-  .wa-btn-float { width: 64px; height: 64px; border-radius: 50%; background: #000; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; text-decoration: none; box-shadow: 0 10px 30px rgba(0,0,0,.2); transition: transform .2s; }
-  .wa-btn-float:hover { transform: scale(1.1); }
-
-  /* ─────────── FOOTER ─────────── */
-  footer { background: #fff; padding: 80px 0 32px; border:none; }
-  .footer-inner { max-width: 1400px; margin: auto; padding: 0 24px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
-  .footer-logo { font-size: 2rem; font-weight: 800; color: var(--text); text-decoration: none; margin-bottom: 24px; display: inline-block; letter-spacing: -1px; }
-  .footer-desc { font-size: 1.05rem; color: var(--muted); line-height: 1.6; margin-bottom: 32px; max-width: 400px; }
-  .footer-wa { display: inline-flex; align-items: center; gap: 10px; background: #000; color: #fff; padding: 16px 28px; border-radius: 30px; font-weight: 700; font-size: 1rem; text-decoration: none; transition: background .2s; border:none;}
-  .footer-wa:hover { background: #333; }
-  .footer-col-title { font-weight: 800; font-size: 1.15rem; margin-bottom: 24px; color: var(--text); }
-  .footer-links { list-style: none; }
-  .footer-links li { margin-bottom: 16px; }
-  .footer-links a { color: var(--muted); text-decoration: none; font-size: 1rem; font-weight: 600; transition: color .2s; }
-  .footer-links a:hover { color: var(--text); text-decoration:underline; }
-  .footer-bottom { max-width: 1400px; margin: 60px auto 0; padding: 32px 24px 0; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-size: .95rem; color: var(--muted); font-weight: 600; }
-  .footer-bottom a { color: var(--text); text-decoration: none; }
-
-  /* ─────────── TABS ─────────── */
-  .tabs { display: flex; gap: 12px; justify-content: center; margin-bottom: 48px; }
-  .tab { padding: 12px 28px; border-radius: 30px; cursor: pointer; font-size: 1.05rem; font-weight: 700; border: 1px solid var(--border); background: #fff; color: var(--muted); font-family: inherit; transition: all .2s; text-decoration: none; }
-  .tab.active, .tab:hover { background: #000; border-color: #000; color: #fff; }
-
-  /* ─────────── SMARTPHONES PAGE SPECIFICS ─────────── */
-  .phone-gallery { display: flex; gap: 16px; height: auto; width: 100%; margin-bottom: 32px; }
-  .phone-main-img { flex: 3; background: #fff; border-radius: 20px; display: flex; align-items: center; justify-content: center; padding: 24px; aspect-ratio: 1/1; }
-  .phone-side-imgs { flex: 1; display: flex; flex-direction: column; gap: 16px; }
-  .phone-side-img { flex: 1; background: #fff; border-radius: 16px; display: flex; align-items: center; justify-content: center; padding: 12px; position: relative; }
-  .phone-main-img img, .phone-side-img img { width: 100%; height: 100%; object-fit: contain; }
-  .phone-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; width: 100%; margin-bottom: 32px; text-align: left; }
-  .phone-spec-item { background: #fff; padding: 16px; border-radius: 16px; font-size: .85rem; color: var(--muted); }
-  .phone-spec-item strong { color: var(--text); display: block; font-size: 1.05rem; font-weight:800; margin-bottom: 6px; }
-
-  @media (max-width: 1024px) {
-    .footer-inner { grid-template-columns: 1fr 1fr; }
-    .trust-inner { grid-template-columns: repeat(2,1fr); }
-    .promo-grid { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 768px) {
-    .nav-inner { flex-wrap: wrap; gap: 16px; }
-    .search-wrap { order: 3; flex-basis: 100%; }
-    .hero-main { min-height: auto; padding: 40px 20px; }
-    .hero-title { font-size: 2.5rem; }
-    .footer-inner { grid-template-columns: 1fr; gap: 32px; }
-    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
-    .trust-inner { grid-template-columns: 1fr; }
-    .topbar-links { display: none; }
-    .phone-gallery { flex-direction: column; }
-    .phone-side-imgs { flex-direction: row; }
-  }
+  .logout { display: block; text-align: center; margin-top: 20px; color: var(--muted); text-decoration: none; font-weight: 600; }
 </style>
-  <script>
-    if (sessionStorage.getItem('techNigerAdmin') !== 'authenticated') {
-      window.location.href = 'admin-login.html';
-    }
-  </script>
+
+<script>
+  if (sessionStorage.getItem('techNigerAdmin') !== 'authenticated') {
+    window.location.href = 'admin-login.html';
+  }
+</script>
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="topbar">
-  <div class="inner">
-    <span>📍 Livraison disponible — Niamey & alentours &nbsp;|&nbsp; ☎️ +227 89 32 27 53 / 98 48 86 30</span>
-    <div class="topbar-links">
-      <a href="suivi.html">Suivi commande</a>
-      <a href="garantie.html">Garantie</a>
-      <a href="reprise.html">Vendre / Reprendre</a>
-      <a href="aide.html">Aide</a>
+<div class="container">
+  <div class="card">
+    <h1>⚙️ Espace PDG</h1>
+    <p class="sub">Ajouter un nouvel article sur TechNiger Store</p>
+
+    <div class="form-grid">
+      <div>
+        <label>Nom de l'article</label>
+        <input type="text" id="p-name" placeholder="Ex: iPhone 16 Pro">
+      </div>
+      <div>
+        <label>Marque</label>
+        <input type="text" id="p-brand" placeholder="Ex: Apple">
+      </div>
     </div>
-  </div>
-</div>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="nav-inner">
-    <a href="#" class="logo">
-      <div class="logo-icon">⚡</div>
-      Tech<span>Niger</span>
-    </a>
+    <div class="form-grid">
+      <div>
+        <label>Prix (FCFA)</label>
+        <input type="number" id="p-price" placeholder="Ex: 950000">
+      </div>
+      <div>
+        <label>Ancien Prix (Promo)</label>
+        <input type="number" id="p-oldprice" placeholder="Ex: 1100000">
+      </div>
+    </div>
 
-    <div class="search-wrap">
-      <select class="search-cat">
-        <option>Toutes catégories</option>
-        <option>Smartphones</option>
-        <option>Ordinateurs</option>
-        <option>Télévisions</option>
+    <div class="section-title">📸 Photos (3 vues)</div>
+    <input type="text" id="p-img-face" placeholder="Lien Photo Face" style="margin-bottom: 10px;">
+    <input type="text" id="p-img-side1" placeholder="Lien Photo Profil 1" style="margin-bottom: 10px;">
+    <input type="text" id="p-img-side2" placeholder="Lien Photo Profil 2">
+
+    <div class="section-title">⚙️ Caractéristiques</div>
+    <div class="form-grid" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+      <input type="text" id="p-spec-screen" placeholder="Écran">
+      <input type="text" id="p-spec-battery" placeholder="Batterie">
+      <input type="text" id="p-spec-storage" placeholder="Stockage">
+      <input type="text" id="p-spec-ram" placeholder="RAM">
+    </div>
+
+    <div class="form-grid">
+      <div>
+        <label>État</label>
+        <select id="p-badge">
+          <option value="NEUF">✨ NEUF</option>
+          <option value="OCCASION">♻️ OCCASION</option>
+          <option value="PROMO">🔥 PROMO</option>
         </select>
-      <input class="search-input" type="text" placeholder="Recherchez smartphones, laptops, TV...">
-      <button class="search-btn">🔍</button>
+      </div>
+      <div>
+        <label>Catégorie</label>
+        <select id="p-cat">
+          <option value="smartphones">📱 Smartphone</option>
+          <option value="ordinateurs">💻 Ordinateur</option>
+          <option value="televisions">📺 Télévision</option>
+          <option value="montres">⌚ Montre</option>
+        </select>
+      </div>
     </div>
 
-    <div class="nav-actions">
-      <a href="https://wa.me/22789322753?text=Bonjour%2C%20je%20suis%20int%C3%A9ress%C3%A9%20par%20vos%20produits!" target="_blank" class="nav-btn wa">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
-        WhatsApp
-      </a>
-      <button class="nav-btn">❤️ Favoris</button>
-      <a href="panier.html" class="nav-btn cart" style="text-decoration:none;">
-        🛒 Panier
-        <span class="cart-badge" id="cart-count">0</span>
-      </a>
-    </div>
-  </div>
-</nav>
-
-<!-- CATEGORY NAV -->
-<div class="cat-nav">
-  <div class="cat-nav-inner">
-    <a href="index.html" class="cat-link active">🏠 Accueil</a>
-    <a href="smartphones.html" class="cat-link">📱 Smartphones</a>
-    <a href="ordinateurs.html" class="cat-link">💻 Ordinateurs</a>
-    <a href="televisions.html" class="cat-link">📺 Télévisions</a>
-    <a href="imprimantes.html" class="cat-link">🖨️ Imprimantes</a>
-    <a href="montres.html" class="cat-link">⌚ Montres</a>
-    <a href="occasion.html" class="cat-link" style="color: var(--gold)">⭐ Occasion</a>
+    <button id="btn-pub" onclick="publier()" class="btn-publier">🚀 PUBLIER SUR LE SITE</button>
+    <a href="#" onclick="sessionStorage.clear(); window.location.reload();" class="logout">Se déconnecter</a>
   </div>
 </div>
 
-<!-- PAGE HEADER -->
-<div class="section" style="margin-top: 40px; min-height: 50vh; max-width: 1000px; margin-left: auto; margin-right: auto;">
-  <h1 class="hero-title" style="font-size: 2.5rem; text-align: center;">⚙️ Espace <span style="color:var(--accent2)">Administrateur</span></h1>
-  <p class="hero-sub" style="margin: 0 auto 40px; text-align: center;">Générez facilement le code d'un nouveau produit à ajouter sur votre site.</p>
-  
-  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px;">
-    <!-- FORMULAIRE -->
-    <div style="background: var(--bg2); padding: 32px; border-radius: 20px;">
-      <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 24px;">📝 Informations du produit</h2>
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div>
-          <label style="font-weight: 700; margin-bottom: 8px; display: block;">Nom du Produit</label>
-          <input type="text" id="p-name" placeholder="Ex: S24 Ultra" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; font-family: inherit;">
-        </div>
-        <div>
-          <label style="font-weight: 700; margin-bottom: 8px; display: block;">Marque</label>
-          <input type="text" id="p-brand" placeholder="Ex: Samsung" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; font-family: inherit;">
-        </div>
-      </div>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-        <div>
-          <label style="font-weight: 700; margin-bottom: 8px; display: block;">Prix Actuel (FCFA)</label>
-          <input type="number" id="p-price" placeholder="Ex: 580000" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit;">
-        </div>
-        <div>
-          <label style="font-weight: 700; margin-bottom: 8px; display: block;">Ancien Prix (Optionnel)</label>
-          <input type="number" id="p-oldprice" placeholder="Ex: 650000" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit;">
-        </div>
-      </div>
+  // Config de test (a remplacer par la votre)
+  const firebaseConfig = {
+    apiKey: "AIzaSyB-vX_v_EXAMPLE_KEY",
+    authDomain: "techniger-boutique.firebaseapp.com",
+    projectId: "techniger-boutique",
+    storageBucket: "techniger-boutique.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef123456"
+  };
 
-      <label style="font-weight: 700; margin-bottom: 8px; display: block;">📸 URLs des Images (3 photos)</label>
-      <input type="text" id="p-img-face" placeholder="URL Image Face (ex: img/samsung_s24.png)" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; font-family: inherit;">
-      <input type="text" id="p-img-side1" placeholder="URL Image Profil 1 (ex: img/side_profile.png)" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; font-family: inherit;">
-      <input type="text" id="p-img-side2" placeholder="URL Image Profil 2" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 16px; font-family: inherit;">
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-      <label style="font-weight: 700; margin-bottom: 8px; display: block;">⚙️ Spécifications</label>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px;">
-        <input type="text" id="p-spec-screen" placeholder="Écran (ex: 6.8\" AMOLED)" style="padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
-        <input type="text" id="p-spec-battery" placeholder="Batterie (ex: 5000mAh)" style="padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
-        <input type="text" id="p-spec-storage" placeholder="Stockage (ex: 256GB)" style="padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
-        <input type="text" id="p-spec-ram" placeholder="RAM (ex: 12GB)" style="padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
-      </div>
+  window.publier = async function() {
+    const btn = document.getElementById('btn-pub');
+    const data = {
+      name: document.getElementById('p-name').value,
+      brand: document.getElementById('p-brand').value,
+      price: parseInt(document.getElementById('p-price').value),
+      oldPrice: parseInt(document.getElementById('p-oldprice').value) || 0,
+      badge: document.getElementById('p-badge').value,
+      category: document.getElementById('p-cat').value,
+      imgFace: document.getElementById('p-img-face').value || 'img/samsung_s24.png',
+      imgSide1: document.getElementById('p-img-side1').value || 'img/side_profile.png',
+      imgSide2: document.getElementById('p-img-side2').value || 'img/side_profile.png',
+      specs: {
+        screen: document.getElementById('p-spec-screen').value || '-',
+        battery: document.getElementById('p-spec-battery').value || '-',
+        storage: document.getElementById('p-spec-storage').value || '-',
+        ram: document.getElementById('p-spec-ram').value || '-'
+      },
+      createdAt: new Date().getTime()
+    };
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
-        <div>
-          <label style="font-weight: 700; margin-bottom: 8px; display: block;">État (Badge)</label>
-          <select id="p-badge" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; background:#fff;">
-            <option value="NEUF">✨ NEUF</option>
-            <option value="OCCASION">♻️ OCCASION</option>
-            <option value="PROMO">🔥 PROMO</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-weight: 700; margin-bottom: 8px; display: block;">Catégorie</label>
-          <select id="p-icon" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; font-family: inherit; background:#fff;">
-            <option value="📱">📱 Smartphone</option>
-            <option value="💻">💻 Ordinateur</option>
-            <option value="📺">📺 Télévision</option>
-            <option value="⌚">⌚ Montre</option>
-          </select>
-        </div>
-      </div>
+    if(!data.name || !data.price) return alert("Veuillez remplir le nom et le prix !");
 
-      <button onclick="generateCode()" class="btn-primary" style="width: 100%; justify-content: center; background: #000;">⚙️ Générer le Code</button>
-    </div>
-
-    <!-- RESULTAT -->
-    <div>
-      <h2 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 24px;">👁️ Aperçu & Code</h2>
-      
-      <div id="preview-box" style="margin-bottom: 24px; padding: 10px; background: #fff; border: 1px dashed var(--border); border-radius: 20px;">
-        <p style="color:var(--muted); text-align:center;">L'aperçu du produit apparaîtra ici.</p>
-      </div>
-
-      <label style="font-weight: 700; margin-bottom: 8px; display: block;">Code HTML généré (à copier) :</label>
-      <textarea id="code-output" readonly style="width: 100%; height: 200px; padding: 16px; border: 1px solid var(--border); border-radius: 12px; font-family: monospace; font-size: 0.85rem; background: #f9f9f9; resize: none; margin-bottom: 16px;"></textarea>
-      
-      <button onclick="copyCode()" class="btn-wa-sm" style="width: 100%; justify-content: center;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copier le Code</button>
-    </div>
-  </div>
-</div>
-
-<script>
-  function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  }
-
-  function generateCode() {
-    const name = document.getElementById('p-name').value || 'Nom du Produit';
-    const brand = document.getElementById('p-brand').value || 'Marque';
-    const price = parseInt(document.getElementById('p-price').value) || 0;
-    const oldPrice = parseInt(document.getElementById('p-oldprice').value) || 0;
-    const badgeText = document.getElementById('p-badge').value;
-    
-    const imgFace = document.getElementById('p-img-face').value || 'img/samsung_s24.png';
-    const imgSide1 = document.getElementById('p-img-side1').value || 'img/side_profile.png';
-    const imgSide2 = document.getElementById('p-img-side2').value || 'img/side_profile.png';
-
-    const sScreen = document.getElementById('p-spec-screen').value || 'Écran HD+';
-    const sBattery = document.getElementById('p-spec-battery').value || 'Longue durée';
-    const sStorage = document.getElementById('p-spec-storage').value || '128GB';
-    const sRam = document.getElementById('p-spec-ram').value || '8GB';
-
-    let badgeClass = 'badge-new';
-    if(badgeText === 'OCCASION') badgeClass = 'badge-used';
-    if(badgeText === 'PROMO') badgeClass = 'badge-sale';
-
-    let priceRowHTML = `\n        <div class="product-price-row">\n          <span class="price">${formatNumber(price)} FCFA</span>`;
-    
-    if(oldPrice > price) {
-      const discount = Math.round(((oldPrice - price) / oldPrice) * 100);
-      priceRowHTML += `\n          <span class="price-old">${formatNumber(oldPrice)}</span>\n          <span class="price-save">-${discount}%</span>`;
-    }
-    priceRowHTML += `\n        </div>`;
-
-    const waText = encodeURIComponent(`Bonjour, je veux commander le ${brand} ${name}`);
-
-    const htmlCode = `    <!-- Produit Généré -->
-    <div class="phone-card">
-      <span class="product-badge ${badgeClass}">${badgeText}</span>
-      <button class="product-wish">♡</button>
-      
-      <div class="phone-gallery">
-        <div class="phone-main-img"><img src="${imgFace}" alt="Face"></div>
-        <div class="phone-side-imgs">
-          <div class="phone-side-img"><img src="${imgSide1}" alt="Profil 1"></div>
-          <div class="phone-side-img"><img src="${imgSide2}" alt="Profil 2"></div>
-        </div>
-      </div>
-
-      <div class="product-body">
-        <div class="product-brand">${brand}</div>
-        <div class="product-name">${name}</div>
-        
-        <div class="phone-specs">
-          <div class="phone-spec-item"><strong>Écran</strong>${sScreen}</div>
-          <div class="phone-spec-item"><strong>Batterie</strong>${sBattery}</div>
-          <div class="phone-spec-item"><strong>Stockage</strong>${sStorage}</div>
-          <div class="phone-spec-item"><strong>RAM</strong>${sRam}</div>
-        </div>
-
-        ${priceRowHTML}
-        
-        <div class="product-actions">
-          <button class="btn-add">🛒 Ajouter</button>
-          <a href="https://wa.me/22789322753?text=${waText}" target="_blank" class="btn-wa-sm">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
-          </a>
-        </div>
-      </div>
-    </div>`;
-
-    document.getElementById('code-output').value = htmlCode;
-    
-    // Mettre a jour l'apercu
-    const previewBox = document.getElementById('preview-box');
-    previewBox.innerHTML = htmlCode;
-  }
-
-  function copyCode() {
-    const codeArea = document.getElementById('code-output');
-    if(codeArea.value.trim() === '') return alert('Générez le code d\'abord !');
-    codeArea.select();
-    document.execCommand('copy');
-    alert('Code copié !');
-  }
-</script>
-<!-- TRUST STRIP -->
-<div class="trust-strip">
-  <div class="trust-inner">
-    <div class="trust-item">
-      <div class="trust-icon">🚚</div>
-      <div>
-        <div class="trust-title">Livraison rapide</div>
-        <div class="trust-text">Niamey en 24-48h · Villes de province disponibles</div>
-      </div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-icon">🔒</div>
-      <div>
-        <div class="trust-title">Paiement sécurisé</div>
-        <div class="trust-text">Airtel Money · Moov · MyNita · AmanaTransfers · Espèces</div>
-      </div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-icon">🛡️</div>
-      <div>
-        <div class="trust-title">Garantie & SAV</div>
-        <div class="trust-text">6 à 12 mois selon produit · Après-vente assuré</div>
-      </div>
-    </div>
-    <div class="trust-item">
-      <div class="trust-icon" style="background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.2)">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-      </div>
-      <div>
-        <div class="trust-title">Support WhatsApp 7j/7</div>
-        <div class="trust-text">Réponse en moins de 30 minutes</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <a href="#" class="footer-logo">⚡ Tech<span>Niger</span></a>
-      <p class="footer-desc">Votre boutique électronique de confiance au Niger. Smartphones, ordinateurs, TV et accessoires neufs et d'occasion. Qualité garantie, prix imbattables.</p>
-      <a href="https://wa.me/22789322753" target="_blank" class="footer-wa">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-        Contactez les PDG : +227 89322753 / 98488630
-      </a>
-    </div>
-
-    <div>
-      <div class="footer-col-title">Boutique</div>
-      <ul class="footer-links">
-        <li><a href="#">Nouveautés</a></li>
-        <li><a href="#">Smartphones</a></li>
-        <li><a href="#">Ordinateurs</a></li>
-        <li><a href="#">Télévisions</a></li>
-        <li><a href="#">Occasion certifiée</a></li>
-        <li><a href="#">Toutes les promos</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <div class="footer-col-title">Services</div>
-      <ul class="footer-links">
-        <li><a href="suivi.html">Suivi de commande</a></li>
-        <li><a href="garantie.html">Garantie & SAV</a></li>
-        <li><a href="#">Livraison à domicile</a></li>
-        <li><a href="reprise.html">Reprise / Exchange</a></li>
-        <li><a href="#">Devis pro / entreprises</a></li>
-        <li><a href="#">Financement</a></li>
-      </ul>
-    </div>
-
-    <div>
-      <div class="footer-col-title">À propos</div>
-      <ul class="footer-links">
-        <li><a href="#">Notre boutique</a></li>
-        <li><a href="#">Témoignages</a></li>
-        <li><a href="#">Politique de retour</a></li>
-        <li><a href="#">CGV</a></li>
-        <li><a href="aide.html">Contact</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div class="footer-bottom">
-    <span>© 2025 TechNiger Store — Niamey, Niger. Tous droits réservés.</span>
-    <span>Paiement: 📱 Airtel Money · Moov · MyNita · AmanaTransfers · 💵 Espèces</span>
-  </div>
-</footer>
-
-<!-- WHATSAPP FLOATING BUTTON -->
-<div class="wa-float">
-  <div class="wa-bubble">
-    <strong>💬 Besoin d'aide ?</strong>
-    Commandez ou posez vos questions directement aux PDG !
-  </div>
-  <a href="https://wa.me/22789322753?text=Bonjour%20TechNiger%20!%20Je%20voudrais%20des%20informations%20sur%20vos%20produits." target="_blank" class="wa-btn-float" aria-label="WhatsApp">
-    <svg width="26" height="26" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
-  </a>
-</div>
-
-<script>
-  // Tab switching
-  function setTab(el) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    el.classList.add('active');
-  }
-
-  // Wishlist toggle
-  document.querySelectorAll('.product-wish').forEach(btn => {
-    btn.addEventListener('click', () => {
-      btn.textContent = btn.textContent === '♡' ? '❤️' : '♡';
-    });
-  });
-
-    // SYSTEME DE PANIER ROBUSTE (localStorage)
-  let cart = JSON.parse(localStorage.getItem('techNigerCart')) || [];
-  const cartBadge = document.getElementById('cart-count');
-
-  function updateCartBadge() {
-    if (cartBadge) {
-      cartBadge.textContent = cart.length;
-      if(cart.length > 0) {
-        cartBadge.style.transform = 'scale(1.5)';
-        setTimeout(() => cartBadge.style.transform = 'scale(1)', 200);
-      }
+    try {
+      btn.disabled = true;
+      btn.innerHTML = "⏳ Publication en cours...";
+      await addDoc(collection(db, "articles"), data);
+      alert("✅ ARTICLE PUBLIÉ ! Le PDG a réussi.");
+      window.location.reload();
+    } catch (e) {
+      alert("❌ Erreur. Vérifiez votre connexion.");
+      btn.disabled = false;
+      btn.innerHTML = "🚀 PUBLIER SUR LE SITE";
     }
   }
-  updateCartBadge();
-
-  document.querySelectorAll('.btn-add').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const card = e.target.closest('.product-card') || e.target.closest('.phone-card');
-      if(card) {
-        const name = card.querySelector('.product-name').textContent;
-        const priceText = card.querySelector('.price').textContent;
-        // Extraire uniquement les chiffres pour le calcul
-        const price = parseInt(priceText.replace(/[^0-9]/g, ''));
-        
-        cart.push({ name: name, price: price });
-        localStorage.setItem('techNigerCart', JSON.stringify(cart));
-        updateCartBadge();
-      }
-
-      const original = btn.textContent;
-      btn.textContent = '✅ Ajouté !';
-      btn.style.background = '#25d366';
-      btn.style.color = '#fff';
-      btn.style.borderColor = '#25d366';
-      setTimeout(() => {
-        btn.textContent = original;
-        btn.style.background = '';
-        btn.style.color = '';
-        btn.style.borderColor = '';
-      }, 1500);
-    });
-  });
-
-  // Hide WA bubble after 6s
-  setTimeout(() => {
-    const bubble = document.querySelector('.wa-bubble');
-    if (bubble) { bubble.style.opacity = '0'; bubble.style.transition = 'opacity .5s'; }
-  }, 6000);
-
-  // Entrance animations
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.product-card, .cat-card, .promo-banner, .trust-item').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity .4s ease, transform .4s ease';
-    observer.observe(el);
-  });
 </script>
-
 </body>
 </html>

@@ -714,5 +714,82 @@
   });
 </script>
 
+  <!-- SECTION ARTICLES DYNAMIQUES -->
+  <div class="section" id="dynamic-section" style="display:none;">
+    <div class="section-head">
+      <h2 class="section-title">Nouveautés ⚡</h2>
+    </div>
+    <div class="product-grid" id="firebase-products">
+      <!-- Les articles Firebase apparaîtront ici -->
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, collection, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyB-vX_v_EXAMPLE_KEY",
+    authDomain: "techniger-boutique.firebaseapp.com",
+    projectId: "techniger-boutique",
+    storageBucket: "techniger-boutique.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef123456"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const container = document.getElementById('firebase-products');
+  const section = document.getElementById('dynamic-section');
+
+  function formatPrice(p) { return p.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " "); }
+
+  // Ecouter les changements en temps reel
+  const q = query(collection(db, "articles"), orderBy("createdAt", "desc"));
+  onSnapshot(q, (snapshot) => {
+    if (snapshot.empty) return;
+    
+    section.style.display = 'block';
+    let html = '';
+    
+    snapshot.forEach((doc) => {
+      const p = doc.data();
+      const badgeClass = p.badge === 'OCCASION' ? 'badge-used' : (p.badge === 'PROMO' ? 'badge-sale' : 'badge-new');
+      
+      html += `
+        <div class="phone-card">
+          <span class="product-badge ${badgeClass}">${p.badge}</span>
+          <div class="phone-gallery">
+            <div class="phone-main-img"><img src="${p.imgFace}" alt="Face"></div>
+            <div class="phone-side-imgs">
+              <div class="phone-side-img"><img src="${p.imgSide1}" alt="Side"></div>
+              <div class="phone-side-img"><img src="${p.imgSide2}" alt="Side"></div>
+            </div>
+          </div>
+          <div class="product-body">
+            <div class="product-brand">${p.brand}</div>
+            <div class="product-name">${p.name}</div>
+            <div class="phone-specs">
+              <div class="phone-spec-item"><strong>Écran</strong>${p.specs.screen}</div>
+              <div class="phone-spec-item"><strong>Batterie</strong>${p.specs.battery}</div>
+              <div class="phone-spec-item"><strong>Stockage</strong>${p.specs.storage}</div>
+              <div class="phone-spec-item"><strong>RAM</strong>${p.specs.ram}</div>
+            </div>
+            <div class="product-price-row">
+              <span class="price">${formatPrice(p.price)} FCFA</span>
+              ${p.oldPrice > 0 ? `<span class="price-old">${formatPrice(p.oldPrice)}</span>` : ''}
+            </div>
+            <div class="product-actions">
+              <button class="btn-add">🛒 Ajouter</button>
+              <a href="https://wa.me/22789322753?text=Bonjour, je veux commander le ${p.name}" class="btn-wa-sm">📲</a>
+            </div>
+          </div>
+        </div>
+      `;
+    });
+    container.innerHTML = html;
+  });
+</script>
 </body>
 </html>
