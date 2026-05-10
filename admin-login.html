@@ -24,6 +24,18 @@
     </div>
 
     <script>
+        function hashCode(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+            return hash;
+        }
+
+        const SECRET_HASH = -1436154564; // Hash de TechNiger@PDG2025
+
         function togglePass() {
             var x = document.getElementById("pass");
             if (x.type === "password") { x.type = "text"; } else { x.type = "password"; }
@@ -31,10 +43,9 @@
 
         function login() {
             var p = document.getElementById("pass").value;
-            // Mot de passe exact : TechNiger@PDG2025
-            if (p === "TechNiger@PDG2025") {
+            if (hashCode(p) === SECRET_HASH) {
                 sessionStorage.setItem('techNigerAdmin', 'authenticated');
-                alert("Connexion réussie !");
+                alert("✅ Connexion réussie !");
                 window.location.href = "admin.html";
             } else {
                 document.getElementById("err").style.display = "block";
