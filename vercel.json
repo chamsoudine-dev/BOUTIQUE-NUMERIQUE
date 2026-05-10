@@ -1,9 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/",
-      "destination": "/boutique-electronique.html"
-    }
-  ],
-  "cleanUrls": true
-}
